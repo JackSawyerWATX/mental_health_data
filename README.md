@@ -1,44 +1,45 @@
-# Mental Health Data — Cleaning Script
+# Mental Health Data — Cleaning & Diagnostics
 
-This repository contains a small data-cleaning script and the source CSV used for a quick exploration of mental health care access.
+This repository contains a small set of example scripts and a CSV used for exploring a short mental-health access dataset.
 
 Files
 - `Mental_Health_Care_in_the_Last_4_Weeks.csv`: Source dataset (CSV).
-- `mental_health.py`: Simple Python script that loads, cleans, filters, and prints the cleaned data.
+- `mental_health.py`: Minimal example that filters the dataset to Washington and prints a cleaned view.
+- `clean_data.py`: Updated script that safely loads the CSV, prints diagnostics, and prints the entire DataFrame (no aggressive dropping). Includes error handling if the file cannot be read.
+- `test.py`: small example/test script (contains example pandas usage).
 
 Purpose
-- Provide a minimal example that reads the CSV, removes incomplete rows, filters for the state of Washington, and prints the cleaned table to the console for inspection.
+- Provide a couple of small scripts that demonstrate loading and inspecting the CSV. `clean_data.py` was updated to be safer and more verbose so you can diagnose why rows were being dropped.
 
-How it works
-- The script uses `pandas` to load the CSV.
-- It drops rows where any of the important columns `Indicator`, `Group`, `State`, or `Value` are missing.
-- It filters the rows to only include `State == 'Washington'`.
-- It adjusts pandas display options so the entire cleaned table is printed (no row/column truncation).
+What changed in `clean_data.py`
+- Uses `pandas.read_csv` with explicit encoding and engine.
+- Adds error handling for missing/unreadable CSV files.
+- Prints diagnostics: loaded shape, column names, and missing-value counts per column.
+- Sets pandas display options and prints the full DataFrame. (Warning: this will print a lot of lines for large files.)
+- Keeps a safer cleaning step that only drops rows missing a few key columns if they exist; otherwise falls back to dropping all-empty rows.
 
 Usage
 1. Ensure you have Python 3.8+ installed.
-2. Install `pandas` if you do not already have it:
+2. Install `pandas` if needed:
 
 ```powershell
 python -m pip install pandas
 ```
 
-3. Run the script from the repository folder (PowerShell example):
+3. Run the updated cleaner (PowerShell example):
 
 ```powershell
 cd "c:\Users\jonat\OneDrive\Documents\mental_health_data"
-python mental_health.py
+python clean_data.py
 ```
 
-What the output shows
-- The printed output is the cleaned `DataFrame` after dropping rows with missing values in the key columns and after filtering to Washington.
-- The script sets `display.max_rows`, `display.max_columns`, and `display.max_colwidth` so the DataFrame is fully visible in the console.
+Notes on output
+- The script will print diagnostics first (shape, columns, missing counts), then the full loaded `DataFrame`, and finally a short summary of cleaned rows (if key columns exist).
+- If you see an empty DataFrame printed, check the diagnostics that immediately precede it (shape and missing counts) and make sure the CSV loaded correctly.
 
-Possible improvements
-- Make the state filter a command-line argument instead of hard-coded.
-- Save the cleaned data to a new CSV (e.g., `cleaned_mental_health.csv`).
-- Add basic validation for the CSV path and better error handling.
-- Add a small unit test or a `--preview` flag to print only the head of the cleaned DataFrame for very large files.
+Suggested next steps / improvements
+- Add a `--preview` flag to limit output (e.g., `--head 50`).
+- Add `--state` and `--output cleaned.csv` arguments to control filtering and to save the cleaned data.
+- Replace prints with logging for better control over verbosity.
 
-Contact
-- If you want me to add any of the improvements above (arg parsing, saving output, or tests), say which and I'll implement them.
+If you want, I can implement any of the suggested improvements (arg parsing, preview flag, saving output). Tell me which one to do next.
